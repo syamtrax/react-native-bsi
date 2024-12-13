@@ -2,6 +2,7 @@ import { ScrollView, SafeAreaView } from "react-native";
 import Navbar from "./components/navbar";
 import AccountSummary from "./components/accountSummary";
 import Box from "./components/box";
+import Table from "./components/table";
 
 export default function App({ navigation }) {
   return (
@@ -11,18 +12,10 @@ export default function App({ navigation }) {
         padding: 2,
       }}
     >
-      <Navbar />
+      <Navbar navigation={navigation} />
       <ScrollView>
         <AccountSummary navigation={navigation} />
-        <Box style={{ backgroundColor: "red", marginVertical: 10 }}>Box 1</Box>
-        <Box style={{ backgroundColor: "green", marginVertical: 10 }}>
-          Box 1
-        </Box>
-        <Box style={{ backgroundColor: "blue", marginVertical: 10 }}>Box 1</Box>
-        <Box style={{ backgroundColor: "red", marginVertical: 10 }}>Box 1</Box>
-        <Box style={{ backgroundColor: "green", marginVertical: 10 }}>
-          Box 1
-        </Box>
+        <Table />
       </ScrollView>
     </SafeAreaView>
   );
