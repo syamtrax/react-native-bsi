@@ -29,7 +29,7 @@ export default function App({ navigation }) {
           bottom: 0,
           shadowColor: "#000",
           shadowOffset: { width: 0, height: -3 },
-          shadowOpacity: 0.2,
+          shadowOpacity: 0.1,
           shadowRadius: 8,
         }}
       ></View>

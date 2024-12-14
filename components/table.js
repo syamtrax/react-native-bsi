@@ -1,5 +1,5 @@
 import { DataTable } from "react-native-paper";
-import { StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { Image } from "lucide-react-native";
 import { useState, useEffect } from "react";
 
@@ -34,17 +34,55 @@ export default function Table() {
   }, []);
   return (
     <View style={styles.container}>
-      <DataTable>
+      <DataTable style ={{height : 250}}>
         <DataTable.Header style={styles.tableHeader}>
           <Text style={{ fontSize: 16, fontWeight: "bold" }}>
             Transaction History
           </Text>
         </DataTable.Header>
-        {transactions.map((transaction) => (
-          <DataTable.Row
-            key={transaction.id}
-            style={{ height: 100, borderBottomWidth: 0 }}
-          >
+        <ScrollView>
+          {transactions.map((transaction) => (
+            <DataTable.Row
+              key={transaction.id}
+              style={{ height: 100, borderBottomWidth: 0 }}
+            >
+              <DataTable.Cell
+                style={{
+                  flexDirection: "column",
+                  height: "100%",
+                  justifyContent: "center",
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    gap: 5,
+                    paddingLeft: 9,
+                    alignItems: "center",
+                  }}
+                >
+                  <Image></Image>
+                  <View>
+                    <Text style={{ fontSize: 14 }}>{transaction.from}</Text>
+                    <Text style={{ fontSize: 12 }}>{transaction.type}</Text>
+                    <Text style={{ fontSize: 10 }}>{transaction.date}</Text>
+                  </View>
+                </View>
+              </DataTable.Cell>
+              <DataTable.Cell>
+                <Text
+                  style={{
+                    textAlign: "right",
+                    width: "100%",
+                    paddingRight: 10,
+                  }}
+                >
+                  {formatNumber(transaction.amount)}
+                </Text>
+              </DataTable.Cell>
+            </DataTable.Row>
+          ))}
+          <DataTable.Row style={{ height: 100 }}>
             <DataTable.Cell
               style={{
                 flexDirection: "column",
@@ -62,9 +100,9 @@ export default function Table() {
               >
                 <Image></Image>
                 <View>
-                  <Text style={{ fontSize: 14 }}>{transaction.from}</Text>
-                  <Text style={{ fontSize: 12 }}>{transaction.type}</Text>
-                  <Text style={{ fontSize: 10 }}>{transaction.date}</Text>
+                  <Text style={{ fontSize: 14 }}>Satria Syammahestatma</Text>
+                  <Text style={{ fontSize: 12 }}>Transfer</Text>
+                  <Text style={{ fontSize: 10 }}>08 December 2024</Text>
                 </View>
               </View>
             </DataTable.Cell>
@@ -72,43 +110,107 @@ export default function Table() {
               <Text
                 style={{ textAlign: "right", width: "100%", paddingRight: 10 }}
               >
-                {formatNumber(transaction.amount)}
+                100000
               </Text>
             </DataTable.Cell>
           </DataTable.Row>
-        ))}
-        <DataTable.Row style={{ height: 100 }}>
-          <DataTable.Cell
-            style={{
-              flexDirection: "column",
-              height: "100%",
-              justifyContent: "center",
-            }}
-          >
-            <View
+          <DataTable.Row style={{ height: 100 }}>
+            <DataTable.Cell
               style={{
-                flexDirection: "row",
-                gap: 5,
-                paddingLeft: 9,
-                alignItems: "center",
+                flexDirection: "column",
+                height: "100%",
+                justifyContent: "center",
               }}
             >
-              <Image></Image>
-              <View>
-                <Text style={{ fontSize: 14 }}>Satria Syammahestatma</Text>
-                <Text style={{ fontSize: 12 }}>Transfer</Text>
-                <Text style={{ fontSize: 10 }}>08 December 2024</Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  gap: 5,
+                  paddingLeft: 9,
+                  alignItems: "center",
+                }}
+              >
+                <Image></Image>
+                <View>
+                  <Text style={{ fontSize: 14 }}>Satria Syammahestatma</Text>
+                  <Text style={{ fontSize: 12 }}>Transfer</Text>
+                  <Text style={{ fontSize: 10 }}>08 December 2024</Text>
+                </View>
               </View>
-            </View>
-          </DataTable.Cell>
-          <DataTable.Cell>
-            <Text
-              style={{ textAlign: "right", width: "100%", paddingRight: 10 }}
+            </DataTable.Cell>
+            <DataTable.Cell>
+              <Text
+                style={{ textAlign: "right", width: "100%", paddingRight: 10 }}
+              >
+                100000
+              </Text>
+            </DataTable.Cell>
+          </DataTable.Row>
+          <DataTable.Row style={{ height: 100 }}>
+            <DataTable.Cell
+              style={{
+                flexDirection: "column",
+                height: "100%",
+                justifyContent: "center",
+              }}
             >
-              100000
-            </Text>
-          </DataTable.Cell>
-        </DataTable.Row>
+              <View
+                style={{
+                  flexDirection: "row",
+                  gap: 5,
+                  paddingLeft: 9,
+                  alignItems: "center",
+                }}
+              >
+                <Image></Image>
+                <View>
+                  <Text style={{ fontSize: 14 }}>Satria Syammahestatma</Text>
+                  <Text style={{ fontSize: 12 }}>Transfer</Text>
+                  <Text style={{ fontSize: 10 }}>08 December 2024</Text>
+                </View>
+              </View>
+            </DataTable.Cell>
+            <DataTable.Cell>
+              <Text
+                style={{ textAlign: "right", width: "100%", paddingRight: 10 }}
+              >
+                100000
+              </Text>
+            </DataTable.Cell>
+          </DataTable.Row>
+          <DataTable.Row style={{ height: 100 }}>
+            <DataTable.Cell
+              style={{
+                flexDirection: "column",
+                height: "100%",
+                justifyContent: "center",
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  gap: 5,
+                  paddingLeft: 9,
+                  alignItems: "center",
+                }}
+              >
+                <Image></Image>
+                <View>
+                  <Text style={{ fontSize: 14 }}>Satria Syammahestatma</Text>
+                  <Text style={{ fontSize: 12 }}>Transfer</Text>
+                  <Text style={{ fontSize: 10 }}>08 December 2024</Text>
+                </View>
+              </View>
+            </DataTable.Cell>
+            <DataTable.Cell>
+              <Text
+                style={{ textAlign: "right", width: "100%", paddingRight: 10 }}
+              >
+                100000
+              </Text>
+            </DataTable.Cell>
+          </DataTable.Row>
+        </ScrollView>
       </DataTable>
     </View>
   );

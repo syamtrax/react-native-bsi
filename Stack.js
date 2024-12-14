@@ -34,6 +34,7 @@ const AppStack = () => {
             )}
             options={{ headerShown: false }}
           />
+
           <Stack.Screen
             name="Transfer"
             component={(props) => (

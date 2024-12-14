@@ -35,7 +35,7 @@ export default function LoginPage({ navigation }) {
       } else if (password === "1234") {
         setError("");
         login(email).then(() => {
-          Alert.alert("Login Success", "Welcome back, Admin!", [
+          Alert.alert("Login Success", "Welcome back, Satria Syammahestatma!", [
             {
               text: "OK",
               onPress: () => navigation.navigate("Home"),
@@ -63,11 +63,16 @@ export default function LoginPage({ navigation }) {
       <View style={styles.container}>
         <TextInput
           placeholder="Email"
+          textContentType="email"
           style={styles.inputForm}
+          autoCapitalize="none"
           onChangeText={(value) => setEmail(value)}
         ></TextInput>
         <TextInput
           placeholder="Password"
+          autoCapitalize="none"
+          textContentType="password"
+          secureTextEntry={true}
           style={styles.inputForm}
           onChangeText={setPassword}
         ></TextInput>

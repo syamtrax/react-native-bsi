@@ -8,8 +8,21 @@ import {
 } from "react-native";
 import { ChevronDown } from "lucide-react-native";
 import NavHeader from "../components/header";
+import { useState } from "react";
+import { Dropdown } from "react-native-element-dropdown";
 
 export default function Transfer({ navigation }) {
+  const [value, setValue] = useState(null);
+  const [amount, setAmount] = useState(0);
+  const [notes, setNotes] = useState("");
+
+  const dropDownData = [
+    { label: "BYOND Pay", value: "BYOND Pay" },
+    { label: "Hasanah Card", value: "Hasanah Card" },
+    { label: "QRIS", value: "QRIS" },
+    { label: "DEBIT", value: "DEBIT" },
+  ];
+
   return (
     <SafeAreaView
       style={{
@@ -28,24 +41,34 @@ export default function Transfer({ navigation }) {
           <View style={styles.inputArea}>
             <TextInput
               placeholder=""
+              onChangeText={setAmount}
               style={{ borderBottomWidth: 2, flex: 1, fontSize: 36 }}
             >
               <Text style={{ fontSize: 16, paddingRight: 10 }}>Rp</Text>
             </TextInput>
           </View>
         </View>
-        <TouchableOpacity style={styles.buttonPay}>
-          <Text style={{ fontSize: 16 }}>BYOND Pay</Text>
-          <Text>
-            <ChevronDown />
-          </Text>
-        </TouchableOpacity>
+        <Dropdown
+          style={styles.dropDown}
+          placeholder="Select Payment"
+          data={dropDownData}
+          labelField="label"
+          valueField="value"
+          value={value}
+          onChange={(item) => setValue(item.value)}
+          renderItem={(item) => (
+            <View style={styles.item}>
+              <Text style={styles.textItem}>{item.label}</Text>
+            </View>
+          )}
+        />
         <View style={styles.container}>
           <Text style={{ fontSize: 16, color: "#B3B3B3" }}>Notes</Text>
           <View style={styles.inputArea}>
             <TextInput
               placeholder=""
-              style={{ borderBottomWidth: 2, flex: 1, fontSize: 36 }}
+              onChangeText={setNotes}
+              style={{ borderBottomWidth: 2, flex: 1, fontSize: 16 }}
             />
           </View>
         </View>
@@ -78,7 +101,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   dropDown: {
-    flexDirection: "row",
+    padding: 20,
+    backgroundColor: "white",
+  },
+  item: {
+    padding: 20,
   },
   buttonPay: {
     backgroundColor: "white",
