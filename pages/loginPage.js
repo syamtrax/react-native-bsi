@@ -11,12 +11,22 @@ import {
 import { useState } from "react";
 import logo from "../assets/LogoLogin.png";
 import { UseAuth } from "../context/authContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function LoginPage({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  //const { login } = UseAuth();
+  const { login } = UseAuth();
+
+  // AsyncStorage.getAllKeys((err, keys) => {
+  //   AsyncStorage.multiGet(keys, (error, stores) => {
+  //     stores.map((result, i, store) => {
+  //       console.log({ [store[i][0]]: store[i][1] });
+  //       return true;
+  //     });
+  //   });
+  // });
 
   const handleLogin = () => {
     if (email === "Admin") {
@@ -24,14 +34,14 @@ export default function LoginPage({ navigation }) {
         setError("Password is empty");
       } else if (password === "1234") {
         setError("");
-
-        //login(email),
-        Alert.alert("Login Success", "Welcome back, Admin!", [
-          {
-            text: "OK",
-            onPress: () => navigation.navigate("Home"),
-          },
-        ]);
+        login(email).then(() => {
+          Alert.alert("Login Success", "Welcome back, Admin!", [
+            {
+              text: "OK",
+              onPress: () => navigation.navigate("Home"),
+            },
+          ]);
+        });
       } else {
         setError("Password is incorrect");
       }
@@ -54,7 +64,7 @@ export default function LoginPage({ navigation }) {
         <TextInput
           placeholder="Email"
           style={styles.inputForm}
-          onChangeText={setEmail}
+          onChangeText={(value) => setEmail(value)}
         ></TextInput>
         <TextInput
           placeholder="Password"
@@ -68,7 +78,7 @@ export default function LoginPage({ navigation }) {
             Login
           </Text>
         </TouchableOpacity>
-        <Text>{error}</Text>
+        <Text style={{ marginHorizontal: 15, color: "red" }}>{error}</Text>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
           <Text style={{ marginLeft: 15 }}>Don't have account?</Text>
           <TouchableOpacity

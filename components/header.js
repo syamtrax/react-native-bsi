@@ -9,7 +9,10 @@ export default function NavHeader({ navigation, children }) {
         style={styles.button}
         onPress={() => navigation.goBack()}
       >
-        <ChevronLeft style={{ color: "black" }} />
+        <Text>
+          <ChevronLeft style={{ color: "black" }} />
+        </Text>
+
         <Text style={{ fontWeight: "bold", fontSize: 16 }}>{children}</Text>
       </TouchableOpacity>
     </View>

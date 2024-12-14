@@ -1,15 +1,15 @@
 import {
   SafeAreaView,
+  StyleSheet,
   View,
+  TouchableOpacity,
   Text,
   TextInput,
-  StyleSheet,
-  TouchableOpacity,
 } from "react-native";
 import { ChevronDown } from "lucide-react-native";
 import NavHeader from "../components/header";
 
-export default function TopUp({ navigation }) {
+export default function Transfer({ navigation }) {
   return (
     <SafeAreaView
       style={{
@@ -20,7 +20,9 @@ export default function TopUp({ navigation }) {
       }}
     >
       <View style={{ gap: 30 }}>
-        <NavHeader navigation={navigation}>Top Up</NavHeader>;
+        <NavHeader navigation={navigation}>
+          <Text>Top Up</Text>
+        </NavHeader>
         <View style={styles.container}>
           <Text style={{ fontSize: 16, color: "#B3B3B3" }}>Amount</Text>
           <View style={styles.inputArea}>
@@ -34,7 +36,9 @@ export default function TopUp({ navigation }) {
         </View>
         <TouchableOpacity style={styles.buttonPay}>
           <Text style={{ fontSize: 16 }}>BYOND Pay</Text>
-          <ChevronDown />
+          <Text>
+            <ChevronDown />
+          </Text>
         </TouchableOpacity>
         <View style={styles.container}>
           <Text style={{ fontSize: 16, color: "#B3B3B3" }}>Notes</Text>
@@ -42,7 +46,7 @@ export default function TopUp({ navigation }) {
             <TextInput
               placeholder=""
               style={{ borderBottomWidth: 2, flex: 1, fontSize: 36 }}
-            ></TextInput>
+            />
           </View>
         </View>
       </View>

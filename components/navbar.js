@@ -10,18 +10,48 @@ import {
 } from "react-native";
 import Profile from "../assets/Profile.png";
 import ToggleImage from "../assets/Toggle.png";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { UseAuth } from "../context/authContext";
 
 export default function Navbar({ navigation }) {
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  const [balance, setBalance] = useState(true);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const balance = await fetch("http://localhost:3000/balance");
+        if (!balance.ok) {
+          throw new Error(`Failed to fetch`);
+        }
+        const balanceData = await balance.json();
+        setBalance(balanceData);
+        setError(null);
+        setLoading(false);
+      } catch (err) {
+        setError(err.message);
+      }
+    };
+    fetchData();
+  }, []);
+
   const customAnimation = LayoutAnimation.create(
-    200, // Duration in milliseconds
-    LayoutAnimation.Types.easeInEaseOut, // Animation type
-    LayoutAnimation.Properties.opacity // Animated property
+    200,
+    LayoutAnimation.Types.easeInEaseOut,
+    LayoutAnimation.Properties.opacity
   );
+  const { logout, isLoggedIn } = UseAuth();
   const toggleDropdown = () => {
     LayoutAnimation.configureNext(customAnimation);
     setIsDropdownVisible(!isDropdownVisible);
+  };
+  const handleLogout = () => {
+    logout();
+    navigation.navigate("Login");
+    console.log(isLoggedIn);
   };
   return (
     <View>
@@ -33,22 +63,21 @@ export default function Navbar({ navigation }) {
           <TouchableOpacity style={styles.dropdownItem}>
             <Text>Edit Profile</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.dropdownItem}
-            onPress={() => {
-              navigation.navigate("Login");
-            }}
-          >
+          <TouchableOpacity style={styles.dropdownItem} onPress={handleLogout}>
             <Text>Logout</Text>
           </TouchableOpacity>
         </View>
       )}
       <View style={styles.container}>
-        <TouchableOpacity style={styles.profileNavbar} onPress={toggleDropdown}>
+        <TouchableOpacity
+          activeOpacity={1}
+          style={styles.profileNavbar}
+          onPress={toggleDropdown}
+        >
           <Image source={Profile} style={styles.profileImage} />
           <View>
-            <Text style={{ fontWeight: "bold" }}>Chelsea Immanuela</Text>
-            <Text>Personal Account</Text>
+            <Text style={{ fontWeight: "bold" }}>{balance.userName}</Text>
+            <Text>{balance.accountType}</Text>
           </View>
         </TouchableOpacity>
         <Image source={ToggleImage} />
@@ -60,9 +89,9 @@ export default function Navbar({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.2,
-    shadowRadius: 2,
+    shadowRadius: 6,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",

@@ -8,13 +8,44 @@ import {
 } from "react-native";
 import Sun from "../assets/Sun.png";
 import { Plus, Send } from "lucide-react-native";
+import { useState, useEffect } from "react";
 
 export default function AccountSummary({ navigation }) {
+  const [balance, setBalance] = useState(true);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const balance = await fetch("http://localhost:3000/balance");
+        if (!balance.ok) {
+          throw new Error(`Failed to fetch`);
+        }
+        const balanceData = await balance.json();
+        setBalance(balanceData);
+        setError(null);
+        setLoading(false);
+      } catch (err) {
+        setError(err.message);
+      }
+    };
+    fetchData();
+  }, []);
+  const formatNumber = (number) => {
+    return new Intl.NumberFormat("id-ID", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 3,
+    }).format(number / 1);
+  };
   return (
     <View style={styles.accountSummary}>
       <View style={styles.accountGreeting}>
         <View style={styles.greetingText}>
-          <Text style={styles.greeting}>Good Morning, Chelsea</Text>
+          <Text style={styles.greeting}>
+            Good Morning, {balance.userName?.split(" ")[0] || "Loading..."}
+          </Text>
           <Text style={styles.subGreeting}>
             Check all your incoming and outgoing transactions here
           </Text>
@@ -25,12 +56,16 @@ export default function AccountSummary({ navigation }) {
       <View style={styles.accountInfo}>
         <View style={styles.accountContainer}>
           <Text style={styles.accountLabel}>Account No.</Text>
-          <Text style={styles.accountNumber}>100899</Text>
+          <Text style={styles.accountNumber}>
+            {error !== null ? "Data is not loaded" : `${balance.accountNo}`}
+          </Text>
         </View>
         <View style={styles.balanceContainer}>
           <View>
             <Text style={styles.balanceLabel}>Balance</Text>
-            <Text style={styles.balanceAmount}>Rp 10.000.000</Text>
+            <Text style={styles.balanceAmount}>
+              Rp {formatNumber(balance.amount)}
+            </Text>
           </View>
           <View style={styles.actionButtons}>
             <TouchableOpacity
