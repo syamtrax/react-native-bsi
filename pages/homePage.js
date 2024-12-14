@@ -1,8 +1,8 @@
 import { ScrollView, SafeAreaView, View } from "react-native";
-import Navbar from "./components/navbar";
-import AccountSummary from "./components/accountSummary";
+import Navbar from "../components/navbar";
+import AccountSummary from "../components/accountSummary";
 
-import Table from "./components/table";
+import Table from "../components/table";
 
 export default function App({ navigation }) {
   return (

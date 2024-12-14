@@ -1,7 +1,7 @@
 import * as React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import App from "./App";
+import App from "./pages/homePage";
 import TopUp from "./pages/topUpPage";
 import Transfer from "./pages/transferPage";
 import LoginPage from "./pages/loginPage";
