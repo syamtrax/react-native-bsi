@@ -7,13 +7,18 @@ import {
   Button,
 } from "react-native";
 import Sun from "../assets/Sun.png";
-import { Plus, Send } from "lucide-react-native";
+import { Plus, Send, Eye, EyeOff } from "lucide-react-native";
 import { useState, useEffect } from "react";
 
 export default function AccountSummary({ navigation }) {
   const [balance, setBalance] = useState(true);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [hideBalance, setHideBalance] = useState(true);
+
+  const toggleHideBalance = () => {
+    setHideBalance(!hideBalance);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -63,9 +68,18 @@ export default function AccountSummary({ navigation }) {
         <View style={styles.balanceContainer}>
           <View>
             <Text style={styles.balanceLabel}>Balance</Text>
-            <Text style={styles.balanceAmount}>
-              Rp {formatNumber(balance.amount)}
-            </Text>
+            <View style={{ flexDirection: "row", gap: 4 }}>
+              <Text style={styles.balanceAmount}>
+                {`Rp ${hideBalance ? formatNumber(balance.amount) : "*******"}`}
+              </Text>
+              <TouchableOpacity onPress={toggleHideBalance}>
+                {hideBalance ? (
+                  <Eye style={{ color: "#19918F" }} />
+                ) : (
+                  <EyeOff style={{ color: "#19918F" }} />
+                )}
+              </TouchableOpacity>
+            </View>
           </View>
           <View style={styles.actionButtons}>
             <TouchableOpacity

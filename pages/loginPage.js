@@ -16,39 +16,48 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export default function LoginPage({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [error, setError] = useState({});
   const { login } = UseAuth();
 
-  // AsyncStorage.getAllKeys((err, keys) => {
-  //   AsyncStorage.multiGet(keys, (error, stores) => {
-  //     stores.map((result, i, store) => {
-  //       console.log({ [store[i][0]]: store[i][1] });
-  //       return true;
-  //     });
-  //   });
-  // });
+  AsyncStorage.getAllKeys((err, keys) => {
+    AsyncStorage.multiGet(keys, (error, stores) => {
+      stores.map((result, i, store) => {
+        console.log({ [store[i][0]]: store[i][1] });
+        return true;
+      });
+    });
+  });
 
   const handleLogin = () => {
-    if (email === "Admin") {
-      if (password === "") {
-        setError("Password is empty");
-      } else if (password === "1234") {
-        setError("");
-        login(email).then(() => {
-          Alert.alert("Login Success", "Welcome back, Satria Syammahestatma!", [
-            {
-              text: "OK",
-              onPress: () => navigation.navigate("Home"),
-            },
-          ]);
-        });
+    const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    if (validEmail) {
+      if (email === "admin@gmail.com") {
+        if (password < 7) {
+          setError({ message: "Password is empty" });
+        } else if (password === "12345678") {
+          login(email).then(() => {
+            Alert.alert(
+              "Login Success",
+              "Welcome back, Satria Syammahestatma!",
+              [
+                {
+                  text: "OK",
+                  onPress: () => navigation.navigate("Home"),
+                },
+              ]
+            );
+          });
+        } else {
+          setError({ message: "Password is incorrect" });
+        }
       } else {
-        setError("Password is incorrect");
+        setError({ message: "Invalid credentials" });
       }
     } else {
-      setError("Invalid credentials");
+      setError({ message: "Email is invalid" });
     }
   };
+
   return (
     <SafeAreaView
       style={{
@@ -83,7 +92,9 @@ export default function LoginPage({ navigation }) {
             Login
           </Text>
         </TouchableOpacity>
-        <Text style={{ marginHorizontal: 15, color: "red" }}>{error}</Text>
+        <Text style={{ marginHorizontal: 15, color: "red" }}>
+          {error.message}
+        </Text>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
           <Text style={{ marginLeft: 15 }}>Don't have account?</Text>
           <TouchableOpacity

@@ -7,10 +7,24 @@ import {
   TouchableOpacity,
   Button,
   StyleSheet,
+  Modal,
+  ScrollView,
 } from "react-native";
 import logo from "../assets/LogoLogin.png";
+import { useState } from "react";
+import { Feather } from "@expo/vector-icons";
+import ModalComponent from "../components/modal";
 
 export default function RegisterPage({ navigation }) {
+  const [checkBox, setCheckBox] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+
+  function handleModal() {
+    setModalVisible(!modalVisible);
+  }
+  function handleCheckBox() {
+    setCheckBox(!checkBox);
+  }
   return (
     <SafeAreaView
       style={{
@@ -30,6 +44,35 @@ export default function RegisterPage({ navigation }) {
           placeholder="Avatar Url"
           style={styles.inputForm}
         ></TextInput>
+        <View style={{ flexDirection: "row", marginHorizontal: 20 }}>
+          <View style={styles.wrapperCheckBox}>
+            <TouchableOpacity
+              onPress={handleCheckBox}
+              style={[styles.checkBox]}
+            >
+              {checkBox ? (
+                <Feather
+                  name="check"
+                  style={{
+                    fontSize: 16,
+                  }}
+                />
+              ) : null}
+            </TouchableOpacity>
+            <Text style={styles.labelCheck}></Text>
+          </View>
+          <Text style={{ flexDirection: "row" }}>
+            I have read and agree to the
+            <TouchableOpacity
+              // onPress={() => {
+              //   navigation.navigate("TNC");
+              // }}
+              onPress={handleModal}
+            >
+              <Text style={{ color: "#19918F" }}>Terms and Conditions *</Text>
+            </TouchableOpacity>
+          </Text>
+        </View>
         <TouchableOpacity
           style={styles.loginButton}
           onPress={() => {
@@ -42,6 +85,7 @@ export default function RegisterPage({ navigation }) {
             Register
           </Text>
         </TouchableOpacity>
+
         <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
           <Text style={{ marginLeft: 15 }}>Have account?</Text>
           <TouchableOpacity
@@ -53,6 +97,7 @@ export default function RegisterPage({ navigation }) {
           </TouchableOpacity>
         </View>
       </View>
+      <ModalComponent visible={modalVisible} handle={handleModal} />
     </SafeAreaView>
   );
 }
@@ -78,5 +123,28 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignSelf: "center",
     resizeMode: "contain",
+  },
+  checkBox: {
+    width: 25,
+    height: 25,
+    borderWidth: 1,
+    borderColor: "#000",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  wrapperCheckBox: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  labelCheck: {
+    color: "#fff",
+    marginLeft: 6,
+  },
+  modal: {
+    marginHorizontal: 20,
+    marginVertical: 15,
+    backgroundColor: "white",
+    padding: 20,
+    height: "100%",
   },
 });

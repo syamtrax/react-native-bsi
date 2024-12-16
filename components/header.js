@@ -1,6 +1,5 @@
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { ChevronLeft } from "lucide-react-native";
-import { Button } from "react-native-web";
 
 export default function NavHeader({ navigation, children }) {
   return (

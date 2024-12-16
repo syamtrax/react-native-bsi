@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (username) => {
-    if (username === "Admin") {
+    if (username === "admin@gmail.com") {
       await AsyncStorage.setItem("auth", "true");
       setIsLoggedIn(true);
       return true;
