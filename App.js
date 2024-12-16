@@ -1,17 +1,19 @@
 import * as React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import App from "./pages/homePage";
-import TopUp from "./pages/topUpPage";
-import Transfer from "./pages/transferPage";
+//import App from "./pages/homePage";
+//import Transfer from "./pages/transferPage";
+import Transfer from "./pages/TransferPage";
 import LoginPage from "./pages/loginPage";
 import RegisterPage from "./pages/registerPage";
 import ProtectedRoute from "./components/protectedRoute";
 import { AuthProvider } from "./context/authContext";
+import HomePage from "./pages/homePage";
+import TopUp from "./pages/TopUpPage";
 
 const Stack = createNativeStackNavigator();
 
-const AppStack = () => {
+const App = () => {
   return (
     <AuthProvider>
       <NavigationContainer>
@@ -20,11 +22,12 @@ const AppStack = () => {
             name="Home"
             component={(props) => (
               <ProtectedRoute>
-                <App {...props} />
+                <HomePage {...props} />
               </ProtectedRoute>
             )}
             options={{ headerShown: false }}
           />
+
           <Stack.Screen
             name="TopUp"
             component={(props) => (
@@ -34,7 +37,6 @@ const AppStack = () => {
             )}
             options={{ headerShown: false }}
           />
-
           <Stack.Screen
             name="Transfer"
             component={(props) => (
@@ -60,4 +62,4 @@ const AppStack = () => {
   );
 };
 
-export default AppStack;
+export default App;

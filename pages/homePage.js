@@ -4,7 +4,7 @@ import AccountSummary from "../components/accountSummary";
 
 import Table from "../components/table";
 
-export default function App({ navigation }) {
+export default function HomePage({ navigation }) {
   return (
     <>
       <SafeAreaView

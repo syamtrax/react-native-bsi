@@ -5,16 +5,24 @@ import {
   TouchableOpacity,
   Text,
   TextInput,
+  Easing,
+  LayoutAnimation,
 } from "react-native";
-import { ChevronDown } from "lucide-react-native";
+
 import NavHeader from "../components/header";
 import { useState } from "react";
 import { Dropdown } from "react-native-element-dropdown";
 
-export default function Transfer({ navigation }) {
+export default function TopUp({ navigation }) {
   const [value, setValue] = useState(null);
   const [amount, setAmount] = useState(0);
   const [notes, setNotes] = useState("");
+
+  const customAnimation = LayoutAnimation.create(
+    200,
+    LayoutAnimation.Types.easeInEaseOut,
+    LayoutAnimation.Properties.opacity
+  );
 
   const dropDownData = [
     { label: "BYOND Pay", value: "BYOND Pay" },
