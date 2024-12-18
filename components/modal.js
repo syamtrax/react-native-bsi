@@ -9,7 +9,7 @@ import {
 
 export default function ModalComponent({ visible, handle }) {
   return (
-    <Modal visible={visible} transparent={true}>
+    <Modal visible={visible} transparent={true} animationType="slide">
       <SafeAreaView
         style={{
           width: "90%",

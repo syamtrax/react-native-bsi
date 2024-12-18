@@ -8,36 +8,34 @@ import {
 } from "react-native";
 import Sun from "../assets/Sun.png";
 import { Plus, Send, Eye, EyeOff } from "lucide-react-native";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useNavigation } from "@react-navigation/native";
 
-export default function AccountSummary({ navigation }) {
-  const [balance, setBalance] = useState(true);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+export default function AccountSummary({ data }) {
   const [hideBalance, setHideBalance] = useState(true);
+  const navigation = useNavigation();
+  const [greeting, setGreeting] = useState("");
+
+  const getGreeting = () => {
+    const now = new Date();
+    const hours = now.getHours();
+
+    if (hours >= 5 && hours < 11) {
+      setGreeting("Good Morning");
+    } else if (hours >= 11 && hours < 18) {
+      setGreeting("Good Afternoon");
+    } else {
+      setGreeting("Good Evening");
+    }
+  };
+  useEffect(() => {
+    getGreeting();
+  });
 
   const toggleHideBalance = () => {
     setHideBalance(!hideBalance);
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const balance = await fetch("http://localhost:3000/balance");
-        if (!balance.ok) {
-          throw new Error(`Failed to fetch`);
-        }
-        const balanceData = await balance.json();
-        setBalance(balanceData);
-        setError(null);
-        setLoading(false);
-      } catch (err) {
-        setError(err.message);
-      }
-    };
-    fetchData();
-  }, []);
   const formatNumber = (number) => {
     return new Intl.NumberFormat("id-ID", {
       minimumFractionDigits: 2,
@@ -49,7 +47,7 @@ export default function AccountSummary({ navigation }) {
       <View style={styles.accountGreeting}>
         <View style={styles.greetingText}>
           <Text style={styles.greeting}>
-            Good Morning, {balance.userName?.split(" ")[0] || "Loading..."}
+            {greeting}, {data.full_name?.split(" ")[0] || "Loading..."}
           </Text>
           <Text style={styles.subGreeting}>
             Check all your incoming and outgoing transactions here
@@ -61,16 +59,14 @@ export default function AccountSummary({ navigation }) {
       <View style={styles.accountInfo}>
         <View style={styles.accountContainer}>
           <Text style={styles.accountLabel}>Account No.</Text>
-          <Text style={styles.accountNumber}>
-            {error !== null ? "Data is not loaded" : `${balance.accountNo}`}
-          </Text>
+          <Text style={styles.accountNumber}>{data.account_no}</Text>
         </View>
         <View style={styles.balanceContainer}>
           <View>
             <Text style={styles.balanceLabel}>Balance</Text>
-            <View style={{ flexDirection: "row", gap: 4 }}>
+            <View style={{ flexDirection: "row", gap: 4, width: "250" }}>
               <Text style={styles.balanceAmount}>
-                {`Rp ${hideBalance ? formatNumber(balance.amount) : "*******"}`}
+                {`Rp ${hideBalance ? formatNumber(data.balance) : "*******"}`}
               </Text>
               <TouchableOpacity onPress={toggleHideBalance}>
                 {hideBalance ? (

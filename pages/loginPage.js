@@ -7,54 +7,57 @@ import {
   TouchableOpacity,
   Alert,
   StyleSheet,
+  KeyboardAvoidingView,
 } from "react-native";
-import { useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import logo from "../assets/LogoLogin.png";
 import { UseAuth } from "../context/authContext";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function LoginPage({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState({});
+  const [errors, setErrors] = useState({});
   const { login } = UseAuth();
 
-  AsyncStorage.getAllKeys((err, keys) => {
-    AsyncStorage.multiGet(keys, (error, stores) => {
-      stores.map((result, i, store) => {
-        console.log({ [store[i][0]]: store[i][1] });
-        return true;
-      });
-    });
-  });
+  useFocusEffect(
+    useCallback(() => {
+      return () => {};
+    }, [])
+  );
 
-  const handleLogin = () => {
-    const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    if (validEmail) {
-      if (email === "admin@gmail.com") {
-        if (password < 7) {
-          setError({ message: "Password is empty" });
-        } else if (password === "12345678") {
-          login(email).then(() => {
-            Alert.alert(
-              "Login Success",
-              "Welcome back, Satria Syammahestatma!",
-              [
-                {
-                  text: "OK",
-                  onPress: () => navigation.navigate("Home"),
-                },
-              ]
-            );
-          });
-        } else {
-          setError({ message: "Password is incorrect" });
-        }
-      } else {
-        setError({ message: "Invalid credentials" });
+  const handleLogin = async () => {
+    try {
+      const response = await login(email, password);
+      Alert.alert("Login Success", `Welcome back, ${response}!`, [
+        {
+          text: "OK",
+          onPress: () => navigation.navigate("Home"),
+        },
+      ]);
+    } catch (error) {
+      if (error.response) {
+        setMsg(error.response.data.msg);
       }
+    }
+  };
+  const validateEmail = (text) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(text)) {
+      setErrors((prev) => ({ ...prev, email: "Invalid email address." }));
     } else {
-      setError({ message: "Email is invalid" });
+      setErrors((prev) => ({ ...prev, email: "" }));
+    }
+  };
+
+  const validatePassword = (text) => {
+    if (text.length > 0 && text.length <= 7) {
+      setErrors((prev) => ({
+        ...prev,
+        password: "Password must be at least 8 characters.",
+      }));
+    } else {
+      setErrors((prev) => ({ ...prev, password: "" }));
     }
   };
 
@@ -75,7 +78,10 @@ export default function LoginPage({ navigation }) {
           textContentType="email"
           style={styles.inputForm}
           autoCapitalize="none"
-          onChangeText={(value) => setEmail(value)}
+          onChangeText={(text) => {
+            setEmail(text);
+            validateEmail(text);
+          }}
         ></TextInput>
         <TextInput
           placeholder="Password"
@@ -83,17 +89,26 @@ export default function LoginPage({ navigation }) {
           textContentType="password"
           secureTextEntry={true}
           style={styles.inputForm}
-          onChangeText={setPassword}
+          onChangeText={(text) => {
+            setPassword(text);
+            validatePassword(text);
+          }}
         ></TextInput>
         <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
           <Text
-            style={{ textAlign: "center", fontWeight: "bold", color: "white" }}
+            style={{
+              textAlign: "center",
+              fontWeight: "bold",
+              color: "white",
+            }}
           >
             Login
           </Text>
         </TouchableOpacity>
         <Text style={{ marginHorizontal: 15, color: "red" }}>
-          {error.message}
+          {errors.email !== "" || errors.password !== ""
+            ? "Invalid credentials"
+            : ""}
         </Text>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
           <Text style={{ marginLeft: 15 }}>Don't have account?</Text>

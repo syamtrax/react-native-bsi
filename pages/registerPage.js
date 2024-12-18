@@ -9,15 +9,23 @@ import {
   StyleSheet,
   Modal,
   ScrollView,
+  Alert,
 } from "react-native";
 import logo from "../assets/LogoLogin.png";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Feather } from "@expo/vector-icons";
 import ModalComponent from "../components/modal";
+import api, { registerUser } from "../api/restApi";
 
 export default function RegisterPage({ navigation }) {
   const [checkBox, setCheckBox] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [noHp, setNoHP] = useState("");
+  const [msg, setMsg] = useState("");
+  const [errors, setErrors] = useState({});
 
   function handleModal() {
     setModalVisible(!modalVisible);
@@ -25,6 +33,54 @@ export default function RegisterPage({ navigation }) {
   function handleCheckBox() {
     setCheckBox(!checkBox);
   }
+
+  const handleRegister = async () => {
+    try {
+      const response = await registerUser(fullName, email, password, noHp);
+      navigation.navigate("Login");
+    } catch (error) {
+      if (error.response) {
+        console.log(error.response.data.errors);
+        setMsg(error.response.data.msg);
+        Alert.alert("Error", "Pokoke Error", [
+          {
+            text: "OK",
+          },
+        ]);
+      }
+    }
+  };
+  const validateFullname = (text) => {
+    if (text.length <= 3) {
+      setErrors((prev) => ({
+        ...prev,
+        fullname: "Fullname must be more than 3 characters.",
+      }));
+    } else {
+      setErrors((prev) => ({ ...prev, fullname: "" }));
+    }
+  };
+
+  const validateEmail = (text) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(text)) {
+      setErrors((prev) => ({ ...prev, email: "Invalid email address." }));
+    } else {
+      setErrors((prev) => ({ ...prev, email: "" }));
+    }
+  };
+
+  const validatePassword = (text) => {
+    if (text.length <= 7) {
+      setErrors((prev) => ({
+        ...prev,
+        password: "Password must be at least 8 characters.",
+      }));
+    } else {
+      setErrors((prev) => ({ ...prev, password: "" }));
+    }
+  };
+
   return (
     <SafeAreaView
       style={{
@@ -37,12 +93,41 @@ export default function RegisterPage({ navigation }) {
     >
       <Image source={logo} style={styles.logoImage} />
       <View style={styles.container}>
-        <TextInput placeholder="Full Name" style={styles.inputForm}></TextInput>
-        <TextInput placeholder="Email" style={styles.inputForm}></TextInput>
-        <TextInput placeholder="Password" style={styles.inputForm}></TextInput>
         <TextInput
-          placeholder="Avatar Url"
+          placeholder="Full Name"
           style={styles.inputForm}
+          onChangeText={(text) => {
+            setFullName(text);
+            validateFullname(text);
+          }}
+          autoCapitalize="none"
+        ></TextInput>
+        <Text style={styles.errorlabel}>{errors.fullname}</Text>
+        <TextInput
+          placeholder="Email"
+          style={styles.inputForm}
+          onChangeText={(text) => {
+            setEmail(text);
+            validateEmail(text);
+          }}
+          autoCapitalize="none"
+        ></TextInput>
+        <Text style={styles.errorlabel}>{errors.email}</Text>
+        <TextInput
+          placeholder="Password"
+          style={styles.inputForm}
+          onChangeText={(text) => {
+            setPassword(text);
+            validatePassword(text);
+          }}
+          autoCapitalize="none"
+        ></TextInput>
+        <Text style={styles.errorlabel}>{errors.password}</Text>
+        <TextInput
+          placeholder="No HP"
+          style={styles.inputForm}
+          onChangeText={setNoHP}
+          secureTextEntry={true}
         ></TextInput>
         <View style={{ flexDirection: "row", marginHorizontal: 20 }}>
           <View style={styles.wrapperCheckBox}>
@@ -73,12 +158,7 @@ export default function RegisterPage({ navigation }) {
             </TouchableOpacity>
           </Text>
         </View>
-        <TouchableOpacity
-          style={styles.loginButton}
-          onPress={() => {
-            navigation.navigate("Login");
-          }}
-        >
+        <TouchableOpacity style={styles.loginButton} onPress={handleRegister}>
           <Text
             style={{ textAlign: "center", fontWeight: "bold", color: "white" }}
           >
@@ -146,5 +226,9 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     padding: 20,
     height: "100%",
+  },
+  errorlabel: {
+    marginHorizontal: 20,
+    color: "red",
   },
 });

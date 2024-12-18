@@ -13,30 +13,8 @@ import ToggleImage from "../assets/Toggle.png";
 import { useState, useEffect } from "react";
 import { UseAuth } from "../context/authContext";
 
-export default function Navbar({ navigation }) {
+export default function Navbar({ navigation, data }) {
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
-  const [balance, setBalance] = useState(true);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const balance = await fetch("http://localhost:3000/balance");
-        if (!balance.ok) {
-          throw new Error(`Failed to fetch`);
-        }
-        const balanceData = await balance.json();
-        setBalance(balanceData);
-        setError(null);
-        setLoading(false);
-      } catch (err) {
-        setError(err.message);
-      }
-    };
-    fetchData();
-  }, []);
 
   const customAnimation = LayoutAnimation.create(
     200,
@@ -76,8 +54,8 @@ export default function Navbar({ navigation }) {
         >
           <Image source={Profile} style={styles.profileImage} />
           <View>
-            <Text style={{ fontWeight: "bold" }}>{balance.userName}</Text>
-            <Text>{balance.accountType}</Text>
+            <Text style={{ fontWeight: "bold" }}>{data.full_name}</Text>
+            <Text>Personal Account</Text>
           </View>
         </TouchableOpacity>
         <Image source={ToggleImage} />

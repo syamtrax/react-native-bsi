@@ -12,17 +12,51 @@ import {
 import NavHeader from "../components/header";
 import { useState } from "react";
 import { Dropdown } from "react-native-element-dropdown";
+import { useEffect } from "react";
+import api, { FetchTopUp } from "../api/restApi";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { jwtDecode } from "jwt-decode";
 
 export default function TopUp({ navigation }) {
   const [value, setValue] = useState(null);
   const [amount, setAmount] = useState(0);
   const [notes, setNotes] = useState("");
+  const [error, setError] = useState("");
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [buttonDisabled, setButtonDisabled] = useState(false);
+  //console.log(amount);
 
-  const customAnimation = LayoutAnimation.create(
-    200,
-    LayoutAnimation.Types.easeInEaseOut,
-    LayoutAnimation.Properties.opacity
-  );
+  useEffect(() => {
+    const loadData = async () => {
+      const authToken = await AsyncStorage.getItem("accessToken");
+
+      try {
+        setLoading(true);
+        const response = await api.get("/users/me", {
+          headers: {
+            authorization: `Bearer ${authToken}`,
+          },
+        });
+
+        setData(response.data.data);
+        setLoading(false);
+      } catch (err) {}
+    };
+    loadData();
+  }, []);
+
+  const disableButton = () => {
+    if (notes == "" || amount == "") {
+      setButtonDisabled(true);
+    } else {
+      setButtonDisabled(false);
+    }
+  };
+
+  useEffect(() => {
+    disableButton();
+  }, [amount, notes]);
 
   const dropDownData = [
     { label: "BYOND Pay", value: "BYOND Pay" },
@@ -30,7 +64,18 @@ export default function TopUp({ navigation }) {
     { label: "QRIS", value: "QRIS" },
     { label: "DEBIT", value: "DEBIT" },
   ];
+  const type = "c";
+  const handleTopUp = async () => {
+    try {
 
+      const response = await FetchTopUp(type, data.account_no, amount, notes);
+      navigation.navigate("Home");
+
+    } catch (error) {
+      setError(error.message);
+      console.log(error.message);
+    }
+  };
   return (
     <SafeAreaView
       style={{
@@ -48,12 +93,11 @@ export default function TopUp({ navigation }) {
           <Text style={{ fontSize: 16, color: "#B3B3B3" }}>Amount</Text>
           <View style={styles.inputArea}>
             <TextInput
-              placeholder=""
+              placeholder="100"
               onChangeText={setAmount}
               style={{ borderBottomWidth: 2, flex: 1, fontSize: 36 }}
-            >
-              <Text style={{ fontSize: 16, paddingRight: 10 }}>Rp</Text>
-            </TextInput>
+              keyboardType="numeric"
+            ></TextInput>
           </View>
         </View>
         <Dropdown
@@ -81,7 +125,14 @@ export default function TopUp({ navigation }) {
           </View>
         </View>
       </View>
-      <TouchableOpacity style={styles.buttonTopUp}>
+      <TouchableOpacity
+        style={[
+          styles.buttonTopUp,
+          buttonDisabled ? styles.buttonDisabled : null,
+        ]}
+        onPress={handleTopUp}
+        disabled={buttonDisabled}
+      >
         <Text
           style={{
             textAlign: "center",
@@ -128,5 +179,8 @@ const styles = StyleSheet.create({
     margin: 15,
     padding: 20,
     borderRadius: 8,
+  },
+  buttonDisabled: {
+    opacity: 0.5,
   },
 });
